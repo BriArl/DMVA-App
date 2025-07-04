@@ -38,5 +38,3 @@ async def get_moodboard_by_id(id: str):
 
     except Exception:
         raise HTTPException(status_code=400, detail="Invalid moodboard ID")
-
-
