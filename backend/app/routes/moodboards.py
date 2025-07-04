@@ -20,5 +20,6 @@ async def get_moodboards():
     cursor = moodboards_collection.find({})
     async for moodboard in cursor:
         moodboard["id"] = str(moodboard["_id"])
+        del moodboard["_id"]
         moodboards.append(moodboard)
     return moodboards
