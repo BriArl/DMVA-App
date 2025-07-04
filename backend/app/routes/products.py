@@ -34,5 +34,6 @@ async def get_products():
     cursor = db["products"].find({})
     async for product in cursor:
         product["id"] = str(product["_id"])
+        del product["_id"]
         products.append(product)
     return products
