@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 from app.models.moodboard import Moodboard
 from app.config import db
 from datetime import datetime
+from bson import ObjectId
 
 router = APIRouter()
 moodboards_collection = db["moodboards"]
@@ -23,3 +24,19 @@ async def get_moodboards():
         del moodboard["_id"]
         moodboards.append(moodboard)
     return moodboards
+
+@router.get("{/id}")
+async def get_moodboard_by_id(id: str):
+    try:
+        moodboard = await moodboards_collection.find_one({"_id": ObjectId(id)})
+        if not moodboard:
+            raise HTTPException(status_code=404, detail="Moodboard not found")
+    
+        moodboard["id"] = str(moodboard["_id"])
+        del moodboard["_id"]
+        return moodboard
+
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid moodboard ID")
+
+
