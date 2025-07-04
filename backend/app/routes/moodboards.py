@@ -38,3 +38,13 @@ async def get_moodboard_by_id(id: str):
 
     except Exception:
         raise HTTPException(status_code=400, detail="Invalid moodboard ID")
+
+@router.delete("/{id}")
+async def delete_moodboard(id: str):
+    try:
+        result = await moodboards_collection.delete_one({"_id": ObjectId(id)})
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Moodboard not found")
+        return {"message": "Moodboard deleted"}
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid moodboard ID")
