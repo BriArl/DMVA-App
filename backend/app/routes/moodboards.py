@@ -12,7 +12,7 @@ async def create_moodboard(moodboard: Moodboard):
     moodboard_data["created_at"] = datetime.utcnow()
 
     result = await moodboards_collection.insert_one(moodboard_data)
-    return {id: str(result.inserted_id), "message": "Moodboard created"}
+    return {"id": str(result.inserted_id), "message": "Moodboard created"}
 
 @router.get("/")
 async def get_moodboards():
@@ -20,5 +20,5 @@ async def get_moodboards():
     cursor = moodboards_collection.find({})
     async for moodboard in cursor:
         moodboard["id"] = str(moodboard["_id"])
-        moodboard.append(moodboard)
+        moodboards.append(moodboard)
     return moodboards
