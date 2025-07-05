@@ -1,8 +1,9 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Body
 from app.models.moodboard import Moodboard
 from app.config import db
 from datetime import datetime
 from bson import ObjectId
+
 
 router = APIRouter()
 moodboards_collection = db["moodboards"]
@@ -48,3 +49,16 @@ async def delete_moodboard(id: str):
         return {"message": "Moodboard deleted"}
     except Exception:
         raise HTTPException(status_code=400, detail="Invalid moodboard ID")
+    
+@router.put("/{id}")
+async def update_moodboard(id: str, updated_data: dict = Body(...)):
+    try:
+        result = await moodboards_collection.updated_one(
+            {"_id": ObjectId(id)},
+            {"$set": updated_data}
+        )
+        if result.matched_count == 0:
+            raise HTTPException(status_code=404, detail="Moodboard not found")
+        return {"message": "Moodboard updated"}
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid update or ID")
